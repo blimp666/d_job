@@ -94,14 +94,15 @@ WSGI_APPLICATION = 'conference1.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'inoup_conf',
-#        'USER': 'postgres',
-#        'PASSWORD': 'postgres',
-        'HOST': '/var/run/postgresql',
-        'PORT': '5432',
-    }
+    'default': env.db(),
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'inoup_conf',
+# #        'USER': 'postgres',
+# #        'PASSWORD': 'postgres',
+#         'HOST': '/var/run/postgresql',
+#         'PORT': '5432',
+#     }
 }
 
 
