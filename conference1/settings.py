@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
 from pathlib import Path
+import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 import psycopg2
@@ -96,11 +97,11 @@ WSGI_APPLICATION = 'conference1.wsgi.application'
 DATABASES = {
      'default': {
          'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'inoup_conf',
-# #        'USER': 'postgres',
-# #        'PASSWORD': 'postgres',
-#         'HOST': '/var/run/postgresql',
-#         'PORT': '5432',
+        'NAME': 'inoup_conf',
+#        'USER': 'postgres',
+#        'PASSWORD': 'postgres',
+        'HOST': '/var/run/postgresql',
+        'PORT': '5432',
      }
 }
 
@@ -147,3 +148,5 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# Activate Django-Heroku.
+django_heroku.settings(locals())
