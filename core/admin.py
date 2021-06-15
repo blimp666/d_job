@@ -1,6 +1,10 @@
+# coding: utf-8
+"""Регистрация моделей в админке."""
 from django.contrib import admin
+from core.models import Application
+from core.models import Conference
+from core.models import UserProfile
 
-from core.models import UserProfile, Application, Conference
 
 admin.site.register(UserProfile)
 admin.site.register(Application)

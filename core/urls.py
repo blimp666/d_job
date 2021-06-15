@@ -1,10 +1,17 @@
+# coding: utf-8
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import path
-
 from conference1 import settings
-from core.views import news, archive, conference, registration, home_page
-from core.views import log_out, log_in, create_conference
+from core.views import archive
+from core.views import conference
+from core.views import create_conference
+from core.views import home_page
+from core.views import log_in
+from core.views import log_out
+from core.views import news
+from core.views import registration
+
 
 urlpatterns = [
     path('', home_page),
