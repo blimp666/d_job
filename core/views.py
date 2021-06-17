@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
-
 from core.enums import StatusEnum
 from core.forms import CreateApplication
 from core.forms import CreateConference
