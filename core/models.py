@@ -56,12 +56,12 @@ class UserProfile(models.Model):
         verbose_name='Согласие на обработку персональных данных',
         default=False,
     )
-    image = models.ImageField(
-        verbose_name='Изображение',
-        blank=True,
-        null=True,
-        upload_to='user_images',
-    )
+    # image = models.ImageField(
+    #     verbose_name='Изображение',
+    #     blank=True,
+    #     null=True,
+    #     upload_to='user_images',
+    # )
 
     def fullname(self):
         return '{} {} {}'.format(self.surname, self.name, self.patronymic)
