@@ -1,0 +1,87 @@
+{% extends  'core/base.html' %}
+
+{% block title %}
+    <title>Главная страница</title>
+{% endblock %}
+
+{% block header %}
+    <link rel="stylesheet" href="/static/css/home_page.css">
+{% endblock %}
+
+{% block login %}
+    {% if user.is_authenticated %}
+        <div class="button-login">
+            <a class="btn btn-outline-primary" methods="post" href="/logout">
+                <img src="/static/icons/smile.svg">
+                <div class="button-login-text">ВЫЙТИ</div>
+            </a>
+        </div>
+    {% else %}
+        <div class="button-login">
+            <a class="btn btn-outline-primary" methods="post" href="/login">
+                <img src="/static/icons/smile.svg">
+                <div class="button-login-text">ВОЙТИ</div>
+            </a>
+        </div>
+    {% endif %}
+{% endblock %}
+{% block main %}
+    {% if user.is_authenticated %}
+        <div class="lk-header">
+{#            <a href="/" style="margin-right: 100px">ЛИЧНЫЙ КАБИНЕТ</a>#}
+            {% if user.is_superuser %}
+
+            {% else %}
+                <a href="/application_view" methods="POST">МОИ ЗАЯВКИ</a>
+            {% endif %}
+            {% if user.is_superuser %}
+                {#                <a href="">МОИ СООБЩЕНИЯ</a>#}
+{#                <a href="/create_conference">КОНФЕРЕНЦИИ</a>#}
+            {% endif %}
+        </div>
+        {% if conferences %}
+            <div class="container">
+            <div class="row">
+                {% for conference in conferences %}
+                    <div class="col border border-dark rounded">
+                        {#                        <a href="/edit_application/{{ conference.app_id }}"#}
+                        {#                           methods="POST"#}
+                        {#                           style="float: right; font-size: 10px">РЕДАКТИРОВАТЬ</a>#}
+                        <h3>{{ conference.theme }}</h3>
+                        <div class="row">
+                            <div class="col">
+                                <h3>Дата
+                                    проведения: {{ conference.date_to_str }}</h3>
+                                <h3>Статус: {{ conference.status }}</h3>
+                                <h3>Описание: {{ conference.description }}</h3>
+                            </div>
+                        </div>
+                        {% if user.is_superuser %}
+                            <a class="btn btn-outline-primary" methods="post"
+                               href=""
+                               style="margin-bottom: 10px; text-align: center">Посмотреть
+                                заявки</a>
+                        {% else %}
+                            {#                            <a class="btn btn-outline-primary" methods="post"#}
+                            {#                               href=""#}
+                            {#                               style="margin-bottom: 10px; text-align: center">#}
+                            {#                                Сообщения</a>#}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p>Пока пусто.</p>
+        {% endif %}
+    {% else %}
+        <div class="banner">
+            <p>ВСЕ НА КОНФЕРЕНЦИИ!</p>
+        </div>
+        <div class="button-application">
+            <button class="btn btn-primary" methods="post" href="/create_image">
+                ПОДАТЬ ЗАЯВКУ
+            </button>
+        </div>
+    {% endif %}
+
+{% endblock %}

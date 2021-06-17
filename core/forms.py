@@ -1,5 +1,7 @@
 # coding: utf-8
-from django.forms import ModelForm, PasswordInput
+from django.forms import ModelForm
+from django.forms import PasswordInput
+from core.models import Application
 from core.models import Conference
 from core.models import UserProfile
 
@@ -54,3 +56,15 @@ class CreateConference(ModelForm):
             'count_participant',
             'file'
         ]
+
+
+class CreateApplication(ModelForm):
+    """Форма для создания заявки"""
+
+    class Meta:
+        model = Application
+        fields = [
+            'description',
+            'file'
+        ]
+

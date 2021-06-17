@@ -1,9 +1,10 @@
 # coding: utf-8
+import datetime
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
 from django.db import models
-from django.utils import timezone
+from core.enums import StatusEnum
 
 
 class UserProfile(models.Model):
@@ -55,9 +56,15 @@ class UserProfile(models.Model):
         verbose_name='Согласие на обработку персональных данных',
         default=False,
     )
+    image = models.ImageField(
+        verbose_name='Изображение',
+        blank=True,
+        null=True,
+        upload_to='user_images',
+    )
 
     def fullname(self):
-        return '{} {} {}'.join(self.surname, self.name, self.patronymic)
+        return '{} {} {}'.format(self.surname, self.name, self.patronymic)
 
     def __str__(self):
         return self.fullname()
@@ -65,6 +72,46 @@ class UserProfile(models.Model):
     class Meta:
         verbose_name = 'Профиль пользователя'
         verbose_name_plural = 'Профили пользователей'
+
+
+class Conference(models.Model):
+    """Класс конференция."""
+
+    theme = models.CharField(
+        verbose_name='Название конференции',
+        max_length=40,
+    )
+    count_participant = models.SmallIntegerField(
+        verbose_name='Количество участников',
+    )
+    date_start = models.DateField(
+        verbose_name='Дата проведения',
+        default=datetime.datetime.today(),
+    )
+    description = models.CharField(
+        verbose_name='Описание',
+        max_length=200,
+        blank=True,
+        default='',
+    )
+    requirements = models.CharField(
+        verbose_name='Требования',
+        max_length=200,
+        blank=True,
+        default='',
+    )
+    file = models.FileField(
+        verbose_name='Вложения',
+        upload_to='conf_files',
+    )
+
+    def date_to_str(self):
+        date_str = self.date_start.__format__('%d.%m.%y')
+        return date_str
+
+    class Meta:
+        verbose_name = 'Конференция'
+        verbose_name_plural = 'Конференции'
 
 
 class Application(models.Model):
@@ -80,55 +127,18 @@ class Application(models.Model):
     )
     file = models.FileField(
         verbose_name='Работа',
-        upload_to='media',
+        upload_to='app_files',
     )
     status = models.CharField(
         verbose_name='Статус заявки',
-        blank=True,
-        null=True,
-        max_length=40,
+        max_length=20,
+        default=StatusEnum.NEW.value
+    )
+    conference = models.ManyToManyField(
+        Conference,
     )
 
     class Meta:
         verbose_name = 'Заявка на участие'
         verbose_name_plural = 'Заявки на участие'
 
-
-class Conference(models.Model):
-    """Класс конференция."""
-
-    theme = models.CharField(
-        verbose_name='Название конференции',
-        max_length=40,
-    )
-    application = models.ManyToManyField(
-        Application,
-    )
-    count_participant = models.SmallIntegerField(
-        verbose_name='Количество участников',
-    )
-    date_start = models.DateField(
-        verbose_name='Дата проведения',
-        default=timezone.now,
-    )
-    description = models.CharField(
-        verbose_name='Описание',
-        max_length=200,
-        blank=True,
-        default=' ',
-    )
-    requirements = models.CharField(
-        verbose_name='Требования',
-        max_length=200,
-        blank=True,
-        default=' ',
-    )
-    file = models.FileField(
-        verbose_name='Вложения',
-        upload_to='media',
-        blank=True,
-    )
-
-    class Meta:
-        verbose_name = 'Конференция'
-        verbose_name_plural = 'Конференции'

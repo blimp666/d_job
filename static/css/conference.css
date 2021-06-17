@@ -1,9 +1,7 @@
-.conference {
-    text-align: left;
-    display: inline-table;
+.container {
+    margin-bottom: 100px;
 }
 
-.conference p{
-    border: 1px solid black;
-    padding: 5px;
+.container .col{
+
 }

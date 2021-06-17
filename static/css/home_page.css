@@ -22,8 +22,17 @@
     margin-left: 85px;
     font-size: 24px;
     padding: 10px;
+    display: flex;
 }
 
-table {
-    margin-right: 500px;
+.container {
+    margin-bottom: 100px;
+}
+
+.container .col{
+
+}
+
+.row{
+    float: right;
 }

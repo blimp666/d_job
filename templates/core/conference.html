@@ -2,6 +2,11 @@
 
 {% block header %}
     <link rel="stylesheet" href="/static/css/conference.css">
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 {% endblock %}
 
 {% block title %}
@@ -10,33 +15,57 @@
 
 {% block login %}
     {% if user.is_authenticated %}
-    <div class="button-login">
-        <a class="btn btn-outline-primary" methods="post" href="/logout">
-            <img src="/static/icons/smile.svg">
-            <div class="button-login-text">ВЫЙТИ</div>
-        </a>
-    </div>
+        <div class="button-login">
+            <a class="btn btn-outline-primary" methods="post" href="/logout">
+                <img src="/static/icons/smile.svg">
+                <div class="button-login-text">ВЫЙТИ</div>
+            </a>
+        </div>
     {% else %}
-    <div class="button-login">
-        <a class="btn btn-outline-primary" methods="post" href="/login">
-            <img src="/static/icons/smile.svg">
-            <div class="button-login-text">ВОЙТИ</div>
-        </a>
-    </div>
+        <div class="button-login">
+            <a class="btn btn-outline-primary" methods="post" href="/login">
+                <img src="/static/icons/smile.svg">
+                <div class="button-login-text">ВОЙТИ</div>
+            </a>
+        </div>
     {% endif %}
 {% endblock %}
 
 {% block main %}
     {% if conferences %}
-        {% for conference in conferences %}
-            <div class="conference">
-                <p>{{ conference.theme }}
-                    {{ conference.date_start }}
-                    {{ conference.description }}
-                </p>
+        <div class="container">
+            <div class="row">
+                {% for conference in conferences %}
+                    <div class="col border border-dark rounded">
+                    {% if user.is_superuser %}
+{#                        <a href="" style="float: right; font-size: 10px">РЕДАКТИРОВАТЬ</a>#}
+                    {% endif %}
+                        <h3>{{ conference.theme }}</h3>
+                        <div class="row">
+                            <div class="col">
+                                <h3>Дата
+                                    проведения: {{ conference.date_to_str }}</h3>
+                                <h3>Описание {{ conference.description }}</h3>
+                            </div>
+                        </div>
+                        {% if user.is_superuser %}
+                            <a class="btn btn-outline-primary" methods="post"
+                               href="/view_applications/{{ conference.id }}"
+                               style="margin-bottom: 10px; text-align: center">Посмотреть
+                                заявки</a>
+                        {% else %}
+                            <a class="btn btn-outline-primary" methods="post"
+                               href="/create_application/{{ conference.id }}"
+                               style="margin-bottom: 10px; text-align: center">Подать
+                                заявку</a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
             </div>
-        {% endfor %}
-        {% else %}
+
+        </div>
+    {% else %}
         <p>Пока не создано конференций</p>
     {% endif %}
 {% endblock %}

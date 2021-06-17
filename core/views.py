@@ -5,9 +5,13 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
+
+from core.enums import StatusEnum
+from core.forms import CreateApplication
 from core.forms import CreateConference
 from core.forms import LoginForm
 from core.forms import UserProfileForm
+from core.models import Application
 from core.models import Conference
 from core.models import UserProfile
 
@@ -75,33 +79,32 @@ def registration(request):
 
 def conference(request):
     """Рендер страницы с конференциями."""
-
     conferences = Conference.objects.all()
-    return render(request, 'core/conference.html', {'conferences': conferences})
+
+    return render(
+        request,
+        'core/conference.html', {'conferences': conferences}
+    )
 
 
 def archive(request):
     """Рендер страницы с архивом."""
-
     return render(request, 'core/archive.html')
 
 
 def news(request):
     """Рендер страницы новостей."""
-
     return render(request, 'core/news.html')
 
 
 def log_out(request):
     """Выход из профиля."""
-
     auth.logout(request)
     return redirect('/')
 
 
 def log_in(request):
     """Страница для авторизации."""
-
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -123,18 +126,114 @@ def log_in(request):
 
 def create_conference(request):
     """Рендер страницы для создания конференции."""
-
     if request.method == 'POST':
-        form = CreateConference(request.POST, request.FILES)
+        form = CreateConference(request.POST, request.POST['file'])
         if form.is_valid():
             conference_obj = Conference.objects.create(
                 theme=form.cleaned_data.get('theme'),
                 count_participant=form.cleaned_data.get('count_participant'),
                 date_start=form.cleaned_data.get('date_start'),
-                description=form.cleaned_data.get('description')
+                description=form.cleaned_data.get('description'),
             )
+            conference_obj.file = form.files
             conference_obj.save()
             return redirect('/')
     else:
         form = CreateConference()
     return render(request, 'core/create_conference.html', {'form': form})
+
+
+def create_application(request, conference_id):
+    """Рендер формы подачи заявки."""
+    userprofile = UserProfile.objects.filter(
+        user=request.user
+    )
+    if request.method == 'POST':
+        form = CreateApplication(request.POST, request.POST['file'])
+        if form.is_valid():
+            if userprofile:
+                application = Application.objects.filter(
+                    participant=userprofile.get(),
+                    conference=conference_id
+                )
+                if application:
+                    application = application.get()
+                    application.file = form.files
+                    application.description = form.cleaned_data
+                    application.status = StatusEnum.NEW.value
+                else:
+                    application = Application.objects.create(
+                        file=request.POST['file'],
+                        description=form.cleaned_data.get('description')
+                    )
+                    application.participant.add(userprofile.get())
+                    application.conference.add(
+                        Conference.objects.get(id=conference_id)
+                    )
+                application.save()
+            return redirect('/')
+    else:
+        form = CreateApplication()
+    return render(request, 'core/create_application.html', {
+        'form': form,
+        'userprofile': userprofile
+    })
+
+
+def application_view(request):
+    """Рендер страницы с поданными заявки."""
+    userprofile = UserProfile.objects.filter(
+        user=request.user
+    )
+    if userprofile:
+        conferences = Conference.objects.filter(
+            application__participant=userprofile.get()
+        )
+        applications = Application.objects.filter(
+            participant=userprofile.get(),
+            conference__in=conferences
+        )
+        conferences_list = []
+        for conf in conferences:
+            conf.app_description = applications.get(
+                conference=conf.id
+            ).description
+            conf.app_file = applications.get(
+                conference=conf.id
+            ).file
+            conf.status = applications.get(
+                conference=conf.id
+            ).status
+            conf.app_id = applications.get(
+                conference=conf.id
+            ).id
+            conferences_list.append(conf)
+    return render(request, 'core/application_view.html', {
+        'conferences': conferences_list,
+        'userprofile': userprofile,
+    })
+
+
+def edit_application(request, app_id):
+    application = Application.objects.get(id=app_id)
+    if request.method == 'POST':
+        form = CreateApplication(request.POST, request.POST['file'])
+        if form.is_valid():
+            application.description = form.cleaned_data.get('description')
+            application.file = application.file
+            application.save()
+            redirect('/')
+    else:
+        form = CreateApplication()
+    return render(request, 'core/create_application.html', {'form': form})
+
+
+def view_applications(request, conf_id):
+    """Рендер страницы с поданными заявки."""
+    applications = Application.objects.filter(
+        conference=conf_id
+    )
+    return render(request, 'core/check_apps.html', {
+        'applications': applications
+    })
+
