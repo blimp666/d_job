@@ -9,7 +9,7 @@ def create_superuser(apps, schema_editor):
     user = User.objects.create(
         is_superuser=True,
         password='t476eeKl10z',
-        username='iya.p0stnova@gmail.com',
+        username='admin_admin@gmail.com',
         email='iya.p0stnova@gmail.com',
         first_name='Администратор',
         last_name='',
