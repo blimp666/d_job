@@ -8,27 +8,10 @@
     <link rel="stylesheet" href="/static/css/home_page.css">
 {% endblock %}
 
-{% block login %}
-    {% if user.is_authenticated %}
-        <div class="button-login">
-            <a class="btn btn-outline-primary" methods="post" href="/logout">
-                <img src="/static/icons/smile.svg">
-                <div class="button-login-text">ВЫЙТИ</div>
-            </a>
-        </div>
-    {% else %}
-        <div class="button-login">
-            <a class="btn btn-outline-primary" methods="post" href="/login">
-                <img src="/static/icons/smile.svg">
-                <div class="button-login-text">ВОЙТИ</div>
-            </a>
-        </div>
-    {% endif %}
-{% endblock %}
 {% block main %}
     {% if user.is_authenticated %}
         <div class="lk-header">
-{#            <a href="/" style="margin-right: 100px">ЛИЧНЫЙ КАБИНЕТ</a>#}
+            <a href="/" style="margin-right: 100px">ЛИЧНЫЙ КАБИНЕТ</a>
             {% if user.is_superuser %}
 
             {% else %}
@@ -36,39 +19,31 @@
             {% endif %}
             {% if user.is_superuser %}
                 {#                <a href="">МОИ СООБЩЕНИЯ</a>#}
-{#                <a href="/create_conference">КОНФЕРЕНЦИИ</a>#}
+                {#                <a href="/create_conference">КОНФЕРЕНЦИИ</a>#}
             {% endif %}
         </div>
         {% if applications %}
             <div class="container">
-            <div class="row">
                 {% for app in applications %}
-                    <div class="col border border-dark rounded">
-                        {#                        <a href="/edit_application/{{ conference.app_id }}"#}
-                        {#                           methods="POST"#}
-                        {#                           style="float: right; font-size: 10px">РЕДАКТИРОВАТЬ</a>#}
-                        <h3>{{ app.description }}</h3>
-                        <div class="row">
-                            <div class="col">
-                                <h3>Статус: {{ app.status }}</h3>
-                                <h3>{{ app.file }}</h3>
+                    <div class="row" style="margin-top: 10px; float: left">
+                        <div class="col border border-dark rounded">
+                            <div class="row">
+                                <div class="col">
+                                    <h3>Описание: {{ app.description }}
+                                        <a style="font-size: 18px; float: right" href="/edit_application/{{ app.id }}"> Изменить</a>
+                                    </h3>
+                                    <h3>
+                                        Статус {{ app.status }}</h3>
+                                    <h3>
+                                        <a href="{{ app.file.url }}">Вложение</a>
+                                    </h3>
+                                </div>
                             </div>
                         </div>
-{#                        {% if user.is_superuser %}#}
-{#                            <a class="btn btn-outline-primary" methods="post"#}
-{#                               href=""#}
-{#                               style="margin-bottom: 10px; text-align: center">Посмотреть#}
-{#                                заявки</a>#}
-{#                        {% else %}#}
-                            {#                            <a class="btn btn-outline-primary" methods="post"#}
-                            {#                               href=""#}
-                            {#                               style="margin-bottom: 10px; text-align: center">#}
-                            {#                                Сообщения</a>#}
-{#                        {% endif %}#}
                     </div>
                 {% endfor %}
             </div>
-            {% else %}
+        {% else %}
             <p>Заявки отсутствуют.</p>
         {% endif %}
     {% else %}

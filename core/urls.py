@@ -3,7 +3,8 @@ from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import path
 from conference1 import settings
-from core.views import archive, edit_application, view_applications
+from core.views import archive, edit_application, view_applications, \
+    edit_conference
 from core.views import application_view
 from core.views import create_application
 from core.views import conference
@@ -39,9 +40,13 @@ urlpatterns = [
         view_applications,
         name='view_applications'
     ),
-    path('application_view/', application_view, name='application_view')
+    path('application_view/', application_view, name='application_view'),
+    path(
+        'edit_conference/<int:conf_id>',
+        edit_conference,
+        name='edit_conference'
+    )
 ]
 
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-

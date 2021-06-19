@@ -24,7 +24,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$USER_HOME$/PycharmProjects/conference1" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -73,7 +73,7 @@
       <workItem from="1623674547675" duration="2810000" />
       <workItem from="1623703394899" duration="32000" />
       <workItem from="1623710497314" duration="8194000" />
-      <workItem from="1623959061824" duration="4762000" />
+      <workItem from="1623959061824" duration="6146000" />
     </task>
     <servers />
   </component>

@@ -7,7 +7,7 @@
     <div class="card">
         <div class="card-body">
             <h4 class="card-title">Подача заявки</h4>
-            <form method="post">
+            <form enctype="multipart/form-data" method="post">
                 {{ form|crispy }}
                 {% csrf_token %}
                 <button type="submit" class="btn btn-primary btn-block">
@@ -16,22 +16,4 @@
             </form>
         </div>
     </div>
-{% endblock %}
-
-{% block login %}
-    {% if user.is_authenticated %}
-    <div class="button-login">
-        <a class="btn btn-outline-primary" methods="post" href="/logout">
-            <img src="/static/icons/smile.svg">
-            <div class="button-login-text">ВЫЙТИ</div>
-        </a>
-    </div>
-    {% else %}
-    <div class="button-login">
-        <a class="btn btn-outline-primary" methods="post" href="/login">
-            <img src="/static/icons/smile.svg">
-            <div class="button-login-text">ВОЙТИ</div>
-        </a>
-    </div>
-    {% endif %}
 {% endblock %}

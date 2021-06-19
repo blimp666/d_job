@@ -18,21 +18,3 @@
         </div>
     </div>
 {% endblock %}
-
-{% block login %}
-    {% if user.is_authenticated %}
-    <div class="button-login">
-        <a class="btn btn-outline-primary" methods="post" href="/logout">
-            <img src="/static/icons/smile.svg">
-            <div class="button-login-text">ВЫЙТИ</div>
-        </a>
-    </div>
-    {% else %}
-    <div class="button-login">
-        <a class="btn btn-outline-primary" methods="post" href="/login">
-            <img src="/static/icons/smile.svg">
-            <div class="button-login-text">ВОЙТИ</div>
-        </a>
-    </div>
-    {% endif %}
-{% endblock %}

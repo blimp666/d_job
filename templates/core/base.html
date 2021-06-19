@@ -6,23 +6,50 @@
     {% block title %}
         <title></title>
     {% endblock %}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/base.css">
-    <script type="text/javascript" src={% static "/js/base.js" %}></script>
-{% block header %}
-{% endblock %}
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    {% block header %}
+
+    {% endblock %}
 </head>
 <body>
 <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
-    <h5 class="my-0 mr-md-auto font-weight-normal">Конференции кафедры ИНОУП</h5>
+    <h5 class="my-0 mr-md-auto font-weight-normal">Конференции кафедры
+        ИНОУП</h5>
     <nav class="my-2 my-md-0 mr-md-3">
         <a class="p-2 text-blue" href="/archive">АРХИВ</a>
         <a class="p-2 text-blue" href="/news">НОВОСТИ</a>
         <a class="p-2 text-blue" href="/conference">КОНФЕРЕНЦИИ</a>
-        <a class="p-2 text-blue" href="/registration" methods="post">РЕГИСТРАЦИЯ</a>
         <div class="buttons">
-            <button class="btn btn-outline-primary" methods="post" href="/create_image">ПОДАТЬ ЗАЯВКУ</button>
+            <button class="btn btn-outline-primary" methods="post"
+                    href="/create_image">ПОДАТЬ ЗАЯВКУ
+            </button>
             {% block login %}
+                {% if user.is_authenticated %}
+                    <div class="button-login">
+                        <a class="btn btn-outline-primary" methods="post"
+                           href="/logout">
+                            <img src="/static/icons/smile.svg">
+                            <div class="button-login-text">ВЫЙТИ</div>
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="button-login">
+                        <a class="btn btn-outline-primary" methods="post"
+                           data-toggle="modal" data-target="#myModal">
+                            <img src="/static/icons/smile.svg">
+                            <div class="button-login-text"
+                                 style="color: #007bff">ВОЙТИ
+                            </div>
+                        </a>
+                    </div>
+                {% endif %}
             {% endblock %}
         </div>
     </nav>
@@ -30,4 +57,45 @@
 </body>
 {% block main %}
 {% endblock %}
+<!-- The Modal -->
+<div class="modal" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Вход</h4>
+                <button type="button" class="close" data-dismiss="modal">
+                    &times;
+                </button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="button-login">
+                    <a class="btn btn-outline-primary" methods="post"
+                       style="width: 143.67px"
+                       href="/login">
+                        <img src="/static/icons/smile.svg">
+                        <div class="button-login-text">ВОЙТИ</div>
+                    </a>
+                    <a class="btn btn-outline-primary" methods="post"
+                       href="/registration">
+                        <img src="/static/icons/smile.svg">
+                        <div class="button-login-text">РЕГИСТРАЦИЯ</div>
+                    </a>
+                </div>
+            </div>
+
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary"
+                        data-dismiss="modal">Закрыть
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
 </html>

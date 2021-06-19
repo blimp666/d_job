@@ -1,12 +1,12 @@
 {% extends 'core/base.html' %}
 {% load crispy_forms_filters %}
 {% block title %}
-    <title>Создание конференции</title>
+    <title>Редактирование конференции</title>
 {% endblock %}
 {% block main %}
     <div class="card">
         <div class="card-body">
-            <h4 class="card-title">Создание конференции</h4>
+            <h4 class="card-title">Редактирование конференции</h4>
             <form enctype="multipart/form-data" method="post">
                 {% csrf_token %}
                 {{ form|crispy }}

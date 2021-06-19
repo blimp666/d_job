@@ -13,33 +13,15 @@
     <title>Конференции</title>
 {% endblock %}
 
-{% block login %}
-    {% if user.is_authenticated %}
-        <div class="button-login">
-            <a class="btn btn-outline-primary" methods="post" href="/logout">
-                <img src="/static/icons/smile.svg">
-                <div class="button-login-text">ВЫЙТИ</div>
-            </a>
-        </div>
-    {% else %}
-        <div class="button-login">
-            <a class="btn btn-outline-primary" methods="post" href="/login">
-                <img src="/static/icons/smile.svg">
-                <div class="button-login-text">ВОЙТИ</div>
-            </a>
-        </div>
-    {% endif %}
-{% endblock %}
-
 {% block main %}
     {% if conferences %}
         <div class="container">
-            <div class="row">
-                {% for conference in conferences %}
+            {% for conference in conferences %}
+                <div class="row" style="margin-top: 10px">
                     <div class="col border border-dark rounded">
-                    {% if user.is_superuser %}
-{#                        <a href="" style="float: right; font-size: 10px">РЕДАКТИРОВАТЬ</a>#}
-                    {% endif %}
+                        {% if user.is_superuser %}
+                            <a href="{% url 'edit_conference' conf_id=conference.id %}" style="float: right; font-size: 12px">РЕДАКТИРОВАТЬ</a>
+                        {% endif %}
                         <h3>{{ conference.theme }}</h3>
                         <div class="row">
                             <div class="col">
@@ -54,16 +36,17 @@
                                style="margin-bottom: 10px; text-align: center">Посмотреть
                                 заявки</a>
                         {% else %}
-                            <a class="btn btn-outline-primary" methods="post"
-                               href="/create_application/{{ conference.id }}"
-                               style="margin-bottom: 10px; text-align: center">Подать
-                                заявку</a>
+                            {% if user.is_authenticated %}
+                                <a class="btn btn-outline-primary"
+                                   methods="post"
+                                   href="/create_application/{{ conference.id }}"
+                                   style="margin-bottom: 10px; text-align: center">Подать
+                                    заявку</a>
+                            {% endif %}
                         {% endif %}
                     </div>
-                {% endfor %}
-
-            </div>
-
+                </div>
+            {% endfor %}
         </div>
     {% else %}
         <p>Пока не создано конференций</p>

@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
 from core.enums import StatusEnum
-from core.forms import CreateApplication
+from core.forms import CreateApplication, EditApplication
 from core.forms import CreateConference
 from core.forms import LoginForm
 from core.forms import UserProfileForm
@@ -17,7 +17,6 @@ from core.models import UserProfile
 
 def home_page(request):
     """Рендер главной страницы."""
-
     if getattr(request.user, 'id'):
         userprofile = UserProfile.objects.get(
             user_id=request.user.id
@@ -126,7 +125,7 @@ def log_in(request):
 def create_conference(request):
     """Рендер страницы для создания конференции."""
     if request.method == 'POST':
-        form = CreateConference(request.POST, request.POST['file'])
+        form = CreateConference(request.POST, request.FILES)
         if form.is_valid():
             conference_obj = Conference.objects.create(
                 theme=form.cleaned_data.get('theme'),
@@ -134,7 +133,7 @@ def create_conference(request):
                 date_start=form.cleaned_data.get('date_start'),
                 description=form.cleaned_data.get('description'),
             )
-            conference_obj.file = form.files
+            conference_obj.file = request.FILES['file']
             conference_obj.save()
             return redirect('/')
     else:
@@ -148,7 +147,7 @@ def create_application(request, conference_id):
         user=request.user
     )
     if request.method == 'POST':
-        form = CreateApplication(request.POST, request.POST['file'])
+        form = CreateApplication(request.POST, request.FILES)
         if form.is_valid():
             if userprofile:
                 application = Application.objects.filter(
@@ -157,12 +156,11 @@ def create_application(request, conference_id):
                 )
                 if application:
                     application = application.get()
-                    application.file = form.files
-                    application.description = form.cleaned_data
-                    application.status = StatusEnum.NEW.value
+                    application.file = request.FILES['file']
+                    application.description = form.cleaned_data['description']
                 else:
                     application = Application.objects.create(
-                        file=request.POST['file'],
+                        file=request.FILES['file'],
                         description=form.cleaned_data.get('description')
                     )
                     application.participant.add(userprofile.get())
@@ -216,14 +214,15 @@ def application_view(request):
 def edit_application(request, app_id):
     application = Application.objects.get(id=app_id)
     if request.method == 'POST':
-        form = CreateApplication(request.POST, request.POST['file'])
+        form = EditApplication(request.POST, request.FILES)
         if form.is_valid():
             application.description = form.cleaned_data.get('description')
-            application.file = application.file
+            application.file = request.FILES['file']
+            application.status = form.cleaned_data['status']
             application.save()
-            redirect('/')
+            return redirect('/')
     else:
-        form = CreateApplication()
+        form = EditApplication(instance=application)
     return render(request, 'core/create_application.html', {'form': form})
 
 
@@ -236,3 +235,18 @@ def view_applications(request, conf_id):
         'applications': applications
     })
 
+
+def edit_conference(request, conf_id):
+    conference_obj = Conference.objects.get(id=conf_id)
+    if request.method == 'POST':
+        form = CreateConference(request.POST, request.FILES)
+        if form.is_valid():
+            conference_obj.theme = form.cleaned_data.get('theme')
+            conference_obj.date_start = form.cleaned_data.get('date_start')
+            conference_obj.description = form.cleaned_data.get('description')
+            conference_obj.file = request.FILES['file']
+            conference_obj.save()
+            return redirect('/')
+    else:
+        form = CreateConference(instance=conference_obj)
+    return render(request, 'core/edit_conference.html', {'form': form})

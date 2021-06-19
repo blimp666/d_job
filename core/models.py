@@ -81,9 +81,6 @@ class Conference(models.Model):
         verbose_name='Название конференции',
         max_length=40,
     )
-    count_participant = models.SmallIntegerField(
-        verbose_name='Количество участников',
-    )
     date_start = models.DateField(
         verbose_name='Дата проведения',
         default=datetime.datetime.today(),
@@ -103,6 +100,8 @@ class Conference(models.Model):
     file = models.FileField(
         verbose_name='Вложения',
         upload_to='conf_files',
+        blank=True,
+        null=True,
     )
 
     def date_to_str(self):
@@ -128,6 +127,8 @@ class Application(models.Model):
     file = models.FileField(
         verbose_name='Работа',
         upload_to='app_files',
+        blank=True,
+        null=True,
     )
     status = models.CharField(
         verbose_name='Статус заявки',

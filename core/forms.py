@@ -53,7 +53,6 @@ class CreateConference(ModelForm):
             'date_start',
             'description',
             'requirements',
-            'count_participant',
             'file'
         ]
 
@@ -68,3 +67,14 @@ class CreateApplication(ModelForm):
             'file'
         ]
 
+
+class EditApplication(ModelForm):
+    """Форма для создания заявки"""
+
+    class Meta:
+        model = Application
+        fields = [
+            'description',
+            'status',
+            'file'
+        ]

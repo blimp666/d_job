@@ -8,30 +8,20 @@
     <link rel="stylesheet" href="/static/css/home_page.css">
 {% endblock %}
 
-{% block login %}
-    {% if user.is_authenticated %}
-        <div class="button-login">
-            <a class="btn btn-outline-primary" methods="post" href="/logout">
-                <img src="/static/icons/smile.svg">
-                <div class="button-login-text">ВЫЙТИ</div>
-            </a>
-        </div>
-    {% else %}
-        <div class="button-login">
-            <a class="btn btn-outline-primary" methods="post" href="/login">
-                <img src="/static/icons/smile.svg">
-                <div class="button-login-text">ВОЙТИ</div>
-            </a>
-        </div>
-    {% endif %}
-{% endblock %}
 {% block main %}
     {% if user.is_authenticated %}
         <div class="lk-header">
-            <a href="/" style="padding: 0 20px">ЛИЧНЫЙ КАБИНЕТ</a>
-            <a href="/application_view" methods="POST" style="padding: 0 20px">МОИ
-                ЗАЯВКИ</a>
-{#            <a href="" style="padding: 0 20px">МОИ СООБЩЕНИЯ</a>#}
+            <a href="/" style="margin-right: 40px">ЛИЧНЫЙ КАБИНЕТ</a>
+            {% if user.is_superuser %}
+                <a href="/conference" methods="POST"
+                   style="margin-right: 40px">
+                    ЗАЯВКИ</a>
+            {% else %}
+                <a href="/application_view" methods="POST"
+                   style="margin-right: 40px">
+                    МОИ ЗАЯВКИ</a>
+            {% endif %}
+            {#            <a href="" style="padding: 0 20px">МОИ СООБЩЕНИЯ</a>#}
             {% if user.is_superuser %}
                 <a href="/create_conference">КОНФЕРЕНЦИИ</a>
             {% endif %}
