@@ -1,20 +1,15 @@
 # coding: utf-8
-import io
-import os
-
 from django.contrib import auth
 from django.contrib.auth import login
 from django.contrib.auth.models import User
-from django.core.files import File
 from django.db.models import F, Value
 from django.db.models.functions import Concat
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
-from docxtpl import DocxTemplate
-
+# from docxtpl import DocxTemplate
 from core.enums import StatusEnum
-from core.forms import CreateApplication, EditApplication, FilterField
+from core.forms import CreateApplication, EditApplication
 from core.forms import CreateConference
 from core.forms import LoginForm
 from core.forms import UserProfileForm
@@ -318,18 +313,19 @@ def decline(request, app_id):
 
 def conference_report(request, conf_id):
     """Печать отчёта по одной конференции."""
-    doc = DocxTemplate('templates/core/reports/uchastnik.docx')
-    applications = Application.objects.filter(
-        conference__id=conf_id
-    )
-    context = {'participant': 'ХУЙ'}
-    doc.render(context)
-    doc.save('otchet-uchastnik.docx')
-    doc_io = io.BytesIO()
-    doc.save(doc_io)
-    doc_io.seek(0)
-    response = HttpResponse(doc_io.read())
-    response['Content-Disposition'] = 'attachment; filename=otchet-uchastnik.docx'
-    response['Content-Type'] = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-
-    return response
+    return redirect('/')
+#     doc = DocxTemplate('templates/core/reports/uchastnik.docx')
+#     applications = Application.objects.filter(
+#         conference__id=conf_id
+#     )
+#     context = {'participant': 'здесь будет провайдер'}
+#     doc.render(context)
+#     doc.save('otchet-uchastnik.docx')
+#     doc_io = io.BytesIO()
+#     doc.save(doc_io)
+#     doc_io.seek(0)
+#     response = HttpResponse(doc_io.read())
+#     response['Content-Disposition'] = 'attachment; filename=otchet-uchastnik.docx'
+#     response['Content-Type'] = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+#
+#     return response
