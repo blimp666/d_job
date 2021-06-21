@@ -47,7 +47,7 @@ class UserProfile(models.Model):
         blank=True,
         null=True,
     )
-    phone = models.IntegerField(
+    phone = models.BigIntegerField(
         verbose_name='Телефон',
         blank=True,
         null=True,
@@ -100,7 +100,7 @@ class Conference(models.Model):
     file = models.FileField(
         verbose_name='Вложения',
         upload_to='conf_files',
-        default=''
+        default='static/icons/smile.svg'
     )
 
     def date_to_str(self):
@@ -126,7 +126,7 @@ class Application(models.Model):
     file = models.FileField(
         verbose_name='Работа',
         upload_to='app_files',
-        default=''
+        default='static/icons/smile.svg'
     )
     status = models.CharField(
         verbose_name='Статус заявки',
