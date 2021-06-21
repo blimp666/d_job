@@ -1,36 +1,58 @@
 {% extends  'core/base.html' %}
 
-{% block header %}
-    <link rel="stylesheet" href="/static/css/conference.css">
-    <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-{% endblock %}
-
 {% block title %}
     <title>Конференции</title>
 {% endblock %}
-
+{% block banner %}
+    {% if user.is_authenticated %}
+        <div class="lk-header">
+            <a href="/" style="margin-right: 40px">ЛИЧНЫЙ КАБИНЕТ</a>
+            {% if user.is_superuser %}
+                <a href="/view_all_applications" methods="POST"
+                   style="margin-right: 40px">
+                    ЗАЯВКИ</a>
+            {% else %}
+                <a href="/application_view" methods="POST"
+                   style="margin-right: 40px">
+                    МОИ ЗАЯВКИ</a>
+            {% endif %}
+            {#            <a href="" style="padding: 0 20px">МОИ СООБЩЕНИЯ</a>#}
+            {% if user.is_superuser %}
+                <a href="/create_conference">КОНФЕРЕНЦИИ</a>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="banner">
+            <p>ВСЕ НА КОНФЕРЕНЦИИ!</p>
+        </div>
+        <div class="button-application">
+            <a class="btn btn-primary" methods="post" href="/conference">
+                ПОДАТЬ ЗАЯВКУ
+            </a>
+        </div>
+    {% endif %}
+{% endblock %}
 {% block main %}
     {% if conferences %}
         <div class="container">
             {% for conference in conferences %}
-                <div class="row" style="margin-top: 10px">
+                <div class="row{{ conference.id }}" style="margin-top: 10px">
                     <div class="col border border-dark rounded">
                         {% if user.is_superuser %}
-                            <a href="{% url 'edit_conference' conf_id=conference.id %}" style="float: right; font-size: 12px">РЕДАКТИРОВАТЬ</a>
+                            <a href="{% url 'edit_conference' conf_id=conference.id %}"
+                               style="float: right; font-size: 12px">РЕДАКТИРОВАТЬ</a>
                         {% endif %}
                         <h3>{{ conference.theme }}</h3>
-                        <div class="row">
-                            <div class="col">
+                        <div class="row{{ conference.id }}">
+                            <div class="col{{ conference.id }}">
                                 <h3>Дата
                                     проведения: {{ conference.date_to_str }}</h3>
-                                <h3>Описание {{ conference.description }}</h3>
+                                <h3>Описание: {{ conference.description }}</h3>
                             </div>
                         </div>
                         {% if user.is_superuser %}
+{#                            <h3><a href="/conference_report/{{ conference.id }}">Сформировать#}
+{#                                список</a></h3>#}
                             <a class="btn btn-outline-primary" methods="post"
                                href="/view_applications/{{ conference.id }}"
                                style="margin-bottom: 10px; text-align: center">Посмотреть

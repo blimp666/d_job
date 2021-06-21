@@ -9,69 +9,45 @@
 {% endblock %}
 
 {% block main %}
-    {% if user.is_authenticated %}
-        <div class="lk-header">
-            <a href="/" style="margin-right: 40px">ЛИЧНЫЙ КАБИНЕТ</a>
-            {% if user.is_superuser %}
-
-            {% else %}
-                <a href="/application_view" methods="POST">МОИ ЗАЯВКИ</a>
-            {% endif %}
-            {% if user.is_superuser %}
-{#                <a href="">МОИ СООБЩЕНИЯ</a>#}
-                <a href="/create_conference">КОНФЕРЕНЦИИ</a>
-            {% endif %}
-        </div>
-        {% if conferences %}
-            <div class="container">
-                <div class="row" style="margin-top: 10px; float: left">
-                    {% for conference in conferences %}
-
-                        <div class="col border border-dark rounded"
-                             style="float: left">
-                            <a href="/edit_application/{{ conference.app_id }}"
-                               methods="POST"
-                               style="float: right; font-size: 10px">РЕДАКТИРОВАТЬ</a>
-                            <h3>{{ conference.theme }}</h3>
-                            <div class="row">
-                                <div class="col">
-                                    <h3>Дата
-                                        проведения: {{ conference.date_to_str }}</h3>
-                                    <h3>Статус: {{ conference.status }}</h3>
-                                    <h3>
-                                        Описание: {{ conference.description }}</h3>
-                                </div>
-
-                                {% if user.is_superuser %}
-                                    <a class="btn btn-outline-primary"
-                                       methods="post"
-                                       href=""
-                                       style="margin-bottom: 10px; text-align: center">Посмотреть
-                                        заявки</a>
-                                {% else %}
-                                    {#                            <a class="btn btn-outline-primary" methods="post"#}
-                                    {#                               href=""#}
-                                    {#                               style="margin-bottom: 10px; text-align: center">#}
-                                    {#                                Сообщения</a>#}
-                                {% endif %}
+    {% if conferences %}
+        <div class="container">
+            {% for conference in conferences %}
+                <div class="row{{ conference.id }}">
+                    <div class="col border border-dark rounded"
+                         style="float: left; margin-top: 10px">
+                        <a href="/edit_application/{{ conference.app_id }}"
+                           methods="POST"
+                           style="float: right; font-size: 10px">РЕДАКТИРОВАТЬ</a>
+                        <h3>Конференция: {{ conference.theme }}</h3>
+                        <div class="row{{ conference.id }}">
+                            <div class="col{{ conference.id }}">
+                                <h3>Дата
+                                    проведения: {{ conference.date_to_str }}</h3>
+                                <h3>Статус: {{ conference.status }}</h3>
+                                <h3>
+                                    Описание: {{ conference.description }}</h3>
+                                <h3>Вложение: <a href="{{ conference.app_file.url }}">Файл</a></h3>
                             </div>
-                        </div>
 
-                    {% endfor %}
+                            {% if user.is_superuser %}
+                                <a class="btn btn-outline-primary"
+                                   methods="post"
+                                   href=""
+                                   style="margin-bottom: 10px; text-align: center">Посмотреть
+                                    заявки</a>
+                            {% else %}
+                                {#                            <a class="btn btn-outline-primary" methods="post"#}
+                                {#                               href=""#}
+                                {#                               style="margin-bottom: 10px; text-align: center">#}
+                                {#                                Сообщения</a>#}
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-            </div>
-        {% else %}
-            <p>Пока пусто.</p>
-        {% endif %}
+            {% endfor %}
+        </div>
     {% else %}
-        <div class="banner">
-            <p>ВСЕ НА КОНФЕРЕНЦИИ!</p>
-        </div>
-        <div class="button-application">
-            <button class="btn btn-primary" methods="post" href="/create_image">
-                ПОДАТЬ ЗАЯВКУ
-            </button>
-        </div>
+        <p>Пока пусто.</p>
     {% endif %}
 
 {% endblock %}

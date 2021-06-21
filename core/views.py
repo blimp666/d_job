@@ -1,12 +1,20 @@
 # coding: utf-8
+import io
+import os
+
 from django.contrib import auth
 from django.contrib.auth import login
 from django.contrib.auth.models import User
+from django.core.files import File
+from django.db.models import F, Value
+from django.db.models.functions import Concat
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
+from docxtpl import DocxTemplate
+
 from core.enums import StatusEnum
-from core.forms import CreateApplication, EditApplication
+from core.forms import CreateApplication, EditApplication, FilterField
 from core.forms import CreateConference
 from core.forms import LoginForm
 from core.forms import UserProfileForm
@@ -129,7 +137,6 @@ def create_conference(request):
         if form.is_valid():
             conference_obj = Conference.objects.create(
                 theme=form.cleaned_data.get('theme'),
-                count_participant=form.cleaned_data.get('count_participant'),
                 date_start=form.cleaned_data.get('date_start'),
                 description=form.cleaned_data.get('description'),
             )
@@ -160,13 +167,14 @@ def create_application(request, conference_id):
                     application.description = form.cleaned_data['description']
                 else:
                     application = Application.objects.create(
-                        file=request.FILES['file'],
                         description=form.cleaned_data.get('description')
                     )
                     application.participant.add(userprofile.get())
                     application.conference.add(
                         Conference.objects.get(id=conference_id)
                     )
+                    if request.FILES:
+                        application.file = request.FILES['file']
                 application.save()
             return redirect('/')
     else:
@@ -178,7 +186,7 @@ def create_application(request, conference_id):
 
 
 def application_view(request):
-    """Рендер страницы с поданными заявки."""
+    """Рендер страницы с поданными заявки для администратора."""
     userprofile = UserProfile.objects.filter(
         user=request.user
     )
@@ -211,14 +219,36 @@ def application_view(request):
     })
 
 
+def view_application_all(request):
+    """Рендер страницы со всеми заявками."""
+    applications = Application.objects.all()
+    for application in applications:
+        application.conf_name = applications.filter(
+            id=application.id
+        ).values_list(
+            'conference__theme', flat=True
+        ).get()
+        application.author = UserProfile.objects.get(
+            application=application.id
+        ).fullname()
+        application.author_degree = UserProfile.objects.get(
+            application=application.id
+        ).degree
+    return render(request, 'core/application_all.html', {
+        'applications': applications
+    })
+
+
 def edit_application(request, app_id):
+    """Рендер формы редактирования заявки."""
     application = Application.objects.get(id=app_id)
     if request.method == 'POST':
         form = EditApplication(request.POST, request.FILES)
         if form.is_valid():
             application.description = form.cleaned_data.get('description')
-            application.file = request.FILES['file']
-            application.status = form.cleaned_data['status']
+            if request.FILES:
+                application.file = request.FILES['file']
+            application.status = StatusEnum.NEW.value
             application.save()
             return redirect('/')
     else:
@@ -227,16 +257,34 @@ def edit_application(request, app_id):
 
 
 def view_applications(request, conf_id):
-    """Рендер страницы с поданными заявки."""
+    """Рендер страницы с поданными заявки для одной конференции."""
     applications = Application.objects.filter(
         conference=conf_id
     )
+    for application in applications:
+        application.author = applications.filter(
+            id=application.id
+        ).annotate(
+            fullname=Concat(
+                F('participant__surname'),
+                Value(' '),
+                F('participant__name'),
+                Value(' '),
+                F('participant__patronymic')
+            )
+        ).values_list('fullname', flat=True).get()
+        application.degree = applications.filter(
+            id=application.id
+        ).values_list(
+            'participant__degree', flat=True
+        ).get()
     return render(request, 'core/check_apps.html', {
         'applications': applications
     })
 
 
 def edit_conference(request, conf_id):
+    """Рендер формы редактирования конференции."""
     conference_obj = Conference.objects.get(id=conf_id)
     if request.method == 'POST':
         form = CreateConference(request.POST, request.FILES)
@@ -250,3 +298,38 @@ def edit_conference(request, conf_id):
     else:
         form = CreateConference(instance=conference_obj)
     return render(request, 'core/edit_conference.html', {'form': form})
+
+
+def accept(request, app_id):
+    """Принять зявку."""
+    application = Application.objects.get(id=app_id)
+    application.status = StatusEnum.ACCEPT.value
+    application.save()
+    return redirect('/view_all_applications')
+
+
+def decline(request, app_id):
+    """Отклонить зявку."""
+    application = Application.objects.get(id=app_id)
+    application.status = StatusEnum.DECLINE.value
+    application.save()
+    return redirect('/view_all_applications')
+
+
+def conference_report(request, conf_id):
+    """Печать отчёта по одной конференции."""
+    doc = DocxTemplate('templates/core/reports/uchastnik.docx')
+    applications = Application.objects.filter(
+        conference__id=conf_id
+    )
+    context = {'participant': 'ХУЙ'}
+    doc.render(context)
+    doc.save('otchet-uchastnik.docx')
+    doc_io = io.BytesIO()
+    doc.save(doc_io)
+    doc_io.seek(0)
+    response = HttpResponse(doc_io.read())
+    response['Content-Disposition'] = 'attachment; filename=otchet-uchastnik.docx'
+    response['Content-Type'] = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+
+    return response

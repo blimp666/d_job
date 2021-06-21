@@ -4,7 +4,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import path
 from conference1 import settings
 from core.views import archive, edit_application, view_applications, \
-    edit_conference
+    edit_conference, view_application_all, accept, decline, conference_report
 from core.views import application_view
 from core.views import create_application
 from core.views import conference
@@ -45,6 +45,18 @@ urlpatterns = [
         'edit_conference/<int:conf_id>',
         edit_conference,
         name='edit_conference'
+    ),
+    path(
+        'view_all_applications/',
+        view_application_all,
+        name='view_all_applications'
+    ),
+    path('accept/<int:app_id>', accept, name='accept'),
+    path('decline/<int:app_id>', decline, name='decline'),
+    path(
+        'conference_report/<int:conf_id>',
+        conference_report,
+        name='conference_report'
     )
 ]
 

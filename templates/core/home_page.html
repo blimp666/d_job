@@ -5,15 +5,15 @@
 {% endblock %}
 
 {% block header %}
-    <link rel="stylesheet" href="/static/css/home_page.css">
+
 {% endblock %}
 
-{% block main %}
+{% block banner %}
     {% if user.is_authenticated %}
         <div class="lk-header">
             <a href="/" style="margin-right: 40px">ЛИЧНЫЙ КАБИНЕТ</a>
             {% if user.is_superuser %}
-                <a href="/conference" methods="POST"
+                <a href="/view_all_applications" methods="POST"
                    style="margin-right: 40px">
                     ЗАЯВКИ</a>
             {% else %}
@@ -26,73 +26,76 @@
                 <a href="/create_conference">КОНФЕРЕНЦИИ</a>
             {% endif %}
         </div>
-        {% if userprofile %}
-            <div class="row">
-                <div class="col"
-                     style="float: right">
-                    {% if userprofile.image %}
-                        <img class="border border-dark rounded"
-                             src="{{ userprofile.image.url }}" height="150"
-                             width="200"
-                             style="margin-right: 150px">
-                    {% else %}
-                        <img class="border border-dark rounded"
-                             src="/static/icons/smile.svg" height="150"
-                             width="200"
-                             style="margin-right: 150px">
-                        <a href="" style="display: flex">Добавить
-                            изображение</a>
-                    {% endif %}
-                </div>
-                <div class="brd border border-dark rounded"
-                     style="float: right; margin-right: 300px">
-                    <h3>Фамилия: {{ userprofile.surname }}</h3>
-                    <h3>Имя: {{ userprofile.name }}</h3>
-                    {% if userprofile.patronymic %}
-                        <h3>Отчество: {{ userprofile.patronymic }}</h3>
-                    {% else %}
-                        <h3>Отчество: </h3>
-                    {% endif %}
-                    {% if userprofile.office %}
-                        <h3>Должность: {{ userprofile.office }}</h3>
-                    {% else %}
-                        <h3>Должность: </h3>
-                    {% endif %}
-
-                    <h3>E-Mail: {{ userprofile.email }}</h3>
-                    {% if userprofile.degree %}
-                        <h3>Степень: {{ userprofile.degree }}</h3>
-                    {% else %}
-                        <h3>Степень: </h3>
-                    {% endif %}
-                    {% if userprofile.organization %}
-                        <h3>Организация: {{ userprofile.organization }}</h3>
-                    {% else %}
-                        <h3>Организация: </h3>
-                    {% endif %}
-                    {% if userprofile.address %}
-                        <h3>Адрес: {{ userprofile.address }}</h3>
-                    {% else %}
-                        <h3>Адрес: </h3>
-                    {% endif %}
-                    {% if userprofile.phone %}
-                        <h3>Телефон: {{ userprofile.phone }}</h3>
-                    {% else %}
-                        <h3>Телефон: </h3>
-                    {% endif %}
-                </div>
-            </div>
-        {% else %}
-        {% endif %}
     {% else %}
         <div class="banner">
             <p>ВСЕ НА КОНФЕРЕНЦИИ!</p>
         </div>
         <div class="button-application">
-            <button class="btn btn-primary" methods="post" href="/">
+            <a class="btn btn-primary" methods="post" href="/conference">
                 ПОДАТЬ ЗАЯВКУ
-            </button>
+            </a>
         </div>
+    {% endif %}
+{% endblock %}
+
+{% block main %}
+    {% if userprofile %}
+        <div class="row">
+            <div class="col"
+                 style="float: right">
+                {% if userprofile.image %}
+                    <img class="border border-dark rounded"
+                         src="{{ userprofile.image.url }}" height="150"
+                         width="200"
+                         style="margin-right: 150px">
+                {% else %}
+                    <img class="border border-dark rounded"
+                         src="/static/icons/smile.svg" height="150"
+                         width="200"
+                         style="margin-right: 150px">
+                    <a href="" style="display: flex">Добавить
+                        изображение</a>
+                {% endif %}
+            </div>
+            <div class="brd border border-dark rounded"
+                 style="float: right; margin-right: 300px">
+                <h3>Фамилия: {{ userprofile.surname }}</h3>
+                <h3>Имя: {{ userprofile.name }}</h3>
+                {% if userprofile.patronymic %}
+                    <h3>Отчество: {{ userprofile.patronymic }}</h3>
+                {% else %}
+                    <h3>Отчество: </h3>
+                {% endif %}
+                {% if userprofile.office %}
+                    <h3>Должность: {{ userprofile.office }}</h3>
+                {% else %}
+                    <h3>Должность: </h3>
+                {% endif %}
+
+                <h3>E-Mail: {{ userprofile.email }}</h3>
+                {% if userprofile.degree %}
+                    <h3>Степень: {{ userprofile.degree }}</h3>
+                {% else %}
+                    <h3>Степень: </h3>
+                {% endif %}
+                {% if userprofile.organization %}
+                    <h3>Организация: {{ userprofile.organization }}</h3>
+                {% else %}
+                    <h3>Организация: </h3>
+                {% endif %}
+                {% if userprofile.address %}
+                    <h3>Адрес: {{ userprofile.address }}</h3>
+                {% else %}
+                    <h3>Адрес: </h3>
+                {% endif %}
+                {% if userprofile.phone %}
+                    <h3>Телефон: {{ userprofile.phone }}</h3>
+                {% else %}
+                    <h3>Телефон: </h3>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
     {% endif %}
 
 {% endblock %}

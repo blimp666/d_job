@@ -1,0 +1,75 @@
+{% extends  'core/base.html' %}
+
+{% block title %}
+    <title>Просмотр заявок</title>
+{% endblock %}
+{% block banner %}
+    {% if user.is_authenticated %}
+        <div class="lk-header">
+            <a href="/" style="margin-right: 40px">ЛИЧНЫЙ КАБИНЕТ</a>
+            {% if user.is_superuser %}
+                <a href="/view_all_applications" methods="POST"
+                   style="margin-right: 40px">
+                    ЗАЯВКИ</a>
+            {% else %}
+                <a href="/application_view" methods="POST"
+                   style="margin-right: 40px">
+                    МОИ ЗАЯВКИ</a>
+            {% endif %}
+            {#            <a href="" style="padding: 0 20px">МОИ СООБЩЕНИЯ</a>#}
+            {% if user.is_superuser %}
+                <a href="/create_conference">КОНФЕРЕНЦИИ</a>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="banner">
+            <p>ВСЕ НА КОНФЕРЕНЦИИ!</p>
+        </div>
+        <div class="button-application">
+            <a class="btn btn-primary" methods="post" href="/conference">
+                ПОДАТЬ ЗАЯВКУ
+            </a>
+        </div>
+    {% endif %}
+{% endblock %}
+{% block main %}
+    {% if applications %}
+        <div class="container">
+            {% for app in applications %}
+                <div class="row{{ app.id }}"
+                     style="margin-top: 10px">
+                    <div class="col border border-dark rounded"
+                         style="display: flex">
+                        <div class="row">
+                            <div class="col">
+                                <h3>Конференция: {{ app.conf_name }}</h3>
+                                <h3>Описание: {{ app.description }}</h3>
+                                <h3>Автор: {{ app.author }}</h3>
+                                <h3>Должность: {{ app.author_degree }}</h3>
+                                <h3>Статус: {{ app.status }}</h3>
+                                <h3>
+                                    <a href="{{ app.file.url }}">Вложение</a>
+                                </h3>
+                                <div class="buttons-application"
+                                     style="margin-bottom: 10px">
+                                    <a class="btn btn-outline-primary"
+                                       methods="post"
+                                       href="/accept/{{ app.id }}">
+                                        ПРИНЯТЬ
+                                    </a>
+                                    <a class="btn btn-outline-primary"
+                                       methods="post"
+                                       href="/decline/{{ app.id }}">
+                                        ОТКЛОНИТЬ
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Пока пусто.</p>
+    {% endif %}
+{% endblock %}

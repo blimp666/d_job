@@ -9,29 +9,22 @@
 {% endblock %}
 
 {% block main %}
-    {% if user.is_authenticated %}
-        <div class="lk-header">
-            <a href="/" style="margin-right: 100px">ЛИЧНЫЙ КАБИНЕТ</a>
-            {% if user.is_superuser %}
-
-            {% else %}
-                <a href="/application_view" methods="POST">МОИ ЗАЯВКИ</a>
-            {% endif %}
-            {% if user.is_superuser %}
-                {#                <a href="">МОИ СООБЩЕНИЯ</a>#}
-                {#                <a href="/create_conference">КОНФЕРЕНЦИИ</a>#}
-            {% endif %}
-        </div>
         {% if applications %}
             <div class="container">
                 {% for app in applications %}
-                    <div class="row" style="margin-top: 10px; float: left">
-                        <div class="col border border-dark rounded">
-                            <div class="row">
+                    <div class="row{{ app.id }}" style="margin-top: 10px">
+                        <div class="col border border-dark rounded" style="float: left; margin-bottom: 10px">
+                            <div class="row{{ app.id }}">
                                 <div class="col">
+                                    {% if user.is_superuser %}
+                                    {% else %}
                                     <h3>Описание: {{ app.description }}
                                         <a style="font-size: 18px; float: right" href="/edit_application/{{ app.id }}"> Изменить</a>
                                     </h3>
+                                    {% endif %}
+                                <h3>Автор: {{ app.author }}</h3>
+                                <h3>Должнось: {{ app.degree }}</h3>
+                                <h3>Описание: {{ app.description }}</h3>
                                     <h3>
                                         Статус {{ app.status }}</h3>
                                     <h3>
@@ -46,15 +39,5 @@
         {% else %}
             <p>Заявки отсутствуют.</p>
         {% endif %}
-    {% else %}
-        <div class="banner">
-            <p>ВСЕ НА КОНФЕРЕНЦИИ!</p>
-        </div>
-        <div class="button-application">
-            <button class="btn btn-primary" methods="post" href="/create_image">
-                ПОДАТЬ ЗАЯВКУ
-            </button>
-        </div>
-    {% endif %}
 
 {% endblock %}

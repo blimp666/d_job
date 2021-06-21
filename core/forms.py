@@ -1,4 +1,5 @@
 # coding: utf-8
+from django import forms
 from django.forms import ModelForm
 from django.forms import PasswordInput
 from core.models import Application
@@ -69,12 +70,20 @@ class CreateApplication(ModelForm):
 
 
 class EditApplication(ModelForm):
-    """Форма для создания заявки"""
+    """Форма для редактирования заявки"""
 
     class Meta:
         model = Application
         fields = [
             'description',
-            'status',
             'file'
         ]
+
+
+class FilterField(forms.Form):
+    selected = forms.ChoiceField(
+
+    )
+
+    class Meta:
+        fields = ['selected']

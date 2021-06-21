@@ -100,8 +100,7 @@ class Conference(models.Model):
     file = models.FileField(
         verbose_name='Вложения',
         upload_to='conf_files',
-        blank=True,
-        null=True,
+        default=''
     )
 
     def date_to_str(self):
@@ -127,13 +126,12 @@ class Application(models.Model):
     file = models.FileField(
         verbose_name='Работа',
         upload_to='app_files',
-        blank=True,
-        null=True,
+        default=''
     )
     status = models.CharField(
         verbose_name='Статус заявки',
         max_length=20,
-        default=StatusEnum.NEW.value
+        default=StatusEnum.NEW.value,
     )
     conference = models.ManyToManyField(
         Conference,
@@ -142,4 +140,3 @@ class Application(models.Model):
     class Meta:
         verbose_name = 'Заявка на участие'
         verbose_name_plural = 'Заявки на участие'
-
