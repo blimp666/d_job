@@ -48,6 +48,7 @@
                                 <h3>Дата
                                     проведения: {{ conference.date_to_str }}</h3>
                                 <h3>Описание: {{ conference.description }}</h3>
+				<a href="{{ MEDIA_URL }}{{ conference.file }}">Информационное письмо</a>
                             </div>
                         </div>
                         {% if user.is_superuser %}

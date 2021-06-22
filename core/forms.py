@@ -1,6 +1,6 @@
 # coding: utf-8
 from django import forms
-from django.forms import ModelForm
+from django.forms import ModelForm, Textarea
 from django.forms import PasswordInput
 from core.models import Application
 from core.models import Conference
@@ -56,7 +56,10 @@ class CreateConference(ModelForm):
             'requirements',
             'file'
         ]
-
+        widgets = {
+            'description': Textarea(attrs={'cols': 40, 'rows': 5}),
+            'requirements': Textarea(attrs={'cols': 60, 'rows': 10}),
+        }
 
 class CreateApplication(ModelForm):
     """Форма для создания заявки"""

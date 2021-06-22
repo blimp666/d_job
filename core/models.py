@@ -79,7 +79,7 @@ class Conference(models.Model):
 
     theme = models.CharField(
         verbose_name='Название конференции',
-        max_length=40,
+        max_length=80,
     )
     date_start = models.DateField(
         verbose_name='Дата проведения',
@@ -93,7 +93,7 @@ class Conference(models.Model):
     )
     requirements = models.CharField(
         verbose_name='Требования',
-        max_length=200,
+        max_length=4000,
         blank=True,
         default='',
     )
