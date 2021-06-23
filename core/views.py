@@ -1,24 +1,39 @@
+# coding: utf-8
 from django.contrib import auth
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
-
-from core.forms import UserProfileForm, LoginForm, CreateConference
-from core.models import UserProfile, Conference
+from django.shortcuts import redirect
+from django.shortcuts import render
+from core.forms import CreateConference
+from core.forms import LoginForm
+from core.forms import UserProfileForm
+from core.models import Conference
+from core.models import UserProfile
 
 
 def home_page(request):
+    """Рендер главной страницы."""
+
     if getattr(request.user, 'id'):
         userprofile = UserProfile.objects.get(
             user_id=request.user.id
         )
+        if request.user.is_superuser:
+            is_admin = True
+        else:
+            is_admin = False
     else:
         userprofile = None
-    return render(request, 'core/home_page.html', {'userprofile': userprofile})
+        is_admin = False
+    return render(request, 'core/home_page.html', {
+        'userprofile': userprofile,
+        'is_admin': is_admin,
+    })
 
 
 def registration(request):
+    """Рендер формы регистрации."""
     if request.method == 'POST':
         form = UserProfileForm(request.POST)
         if form.is_valid():
@@ -59,24 +74,34 @@ def registration(request):
 
 
 def conference(request):
+    """Рендер страницы с конференциями."""
+
     conferences = Conference.objects.all()
     return render(request, 'core/conference.html', {'conferences': conferences})
 
 
 def archive(request):
+    """Рендер страницы с архивом."""
+
     return render(request, 'core/archive.html')
 
 
 def news(request):
+    """Рендер страницы новостей."""
+
     return render(request, 'core/news.html')
 
 
 def log_out(request):
+    """Выход из профиля."""
+
     auth.logout(request)
     return redirect('/')
 
 
 def log_in(request):
+    """Страница для авторизации."""
+
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -97,6 +122,8 @@ def log_in(request):
 
 
 def create_conference(request):
+    """Рендер страницы для создания конференции."""
+
     if request.method == 'POST':
         form = CreateConference(request.POST, request.FILES)
         if form.is_valid():

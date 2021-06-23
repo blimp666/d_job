@@ -28,24 +28,43 @@
 {% block main %}
     {% if user.is_authenticated %}
         <div class="lk-header">
-            <a href="">ЛИЧНЫЙ КАБИНЕТ</a>
+            <a href="/">ЛИЧНЫЙ КАБИНЕТ</a>
             <a href="">МОИ ЗАЯВКИ</a>
-        </div>
-        <div class="lk-data">
-            {% if userprofile %}
-                <p>{{ userprofile.name }}
-                {{ userprofile.surname }}
-                {{ userprofile.patronymic }}
-                {{ userprofile.office }}
-                {{ userprofile.email }}
-                {{ userprofile.degree }}
-                {{ userprofile.organization }}
-                {{ userprofile.address }}
-                {{ userprofile.phone }}
-                </p>
-                {% else %}
+            {% if user.is_superuser %}
+            <a href="/create_conference">КОНФЕРЕНЦИИ</a>
             {% endif %}
         </div>
+        {% if userprofile %}
+            <table>
+                <tr>
+                    <td>{{ userprofile.name }} </td>
+                </tr>
+                <tr>
+                    <td>{{ userprofile.surname }}</td>
+                </tr>
+                <tr>
+                    <td>{{ userprofile.patronymic }}</td>
+                </tr>
+                <tr>
+                    <td>{{ userprofile.office }}</td>
+                </tr>
+                <tr>
+                    <td>{{ userprofile.email }}</td>
+                </tr>
+                <tr>
+                    <td>{{ userprofile.degree }}</td>
+                </tr>
+                <tr>
+                    <td>{{ userprofile.organization }}</td>
+                </tr>
+                <tr>
+                    <td>{{ userprofile.address }}</td>
+                <tr>
+                    <td>{{ userprofile.phone }}</td>
+                </tr>
+            </table>
+        {% else %}
+        {% endif %}
     {% else %}
         <div class="banner">
             <p>ВСЕ НА КОНФЕРЕНЦИИ!</p>

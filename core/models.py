@@ -1,5 +1,7 @@
+# coding: utf-8
 from django.contrib.auth.base_user import AbstractBaseUser
-from django.contrib.auth.models import AbstractUser, User
+from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 
@@ -71,9 +73,10 @@ class Application(models.Model):
     participant = models.ManyToManyField(
         UserProfile,
     )
-    name = models.CharField(
-        verbose_name='Тема работы',
+    description = models.CharField(
+        verbose_name='Описание',
         max_length=40,
+        default='',
     )
     file = models.FileField(
         verbose_name='Работа',
@@ -114,9 +117,18 @@ class Conference(models.Model):
         blank=True,
         default=' ',
     )
+    requirements = models.CharField(
+        verbose_name='Требования',
+        max_length=200,
+        blank=True,
+        default=' ',
+    )
+    file = models.FileField(
+        verbose_name='Вложения',
+        upload_to='media',
+        blank=True,
+    )
 
     class Meta:
         verbose_name = 'Конференция'
         verbose_name_plural = 'Конференции'
-
-

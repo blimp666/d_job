@@ -20,11 +20,6 @@
         <a class="p-2 text-blue" href="/news">НОВОСТИ</a>
         <a class="p-2 text-blue" href="/conference">КОНФЕРЕНЦИИ</a>
         <a class="p-2 text-blue" href="/registration" methods="post">РЕГИСТРАЦИЯ</a>
-        {% if user.is_superuser %}
-            <a class="btn btn-outline-primary" methods="post"
-               href="/create_conference">Создать конференцию
-            </a>
-        {% endif %}
         <div class="buttons">
             <button class="btn btn-outline-primary" methods="post" href="/create_image">ПОДАТЬ ЗАЯВКУ</button>
             {% block login %}

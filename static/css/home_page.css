@@ -24,16 +24,6 @@
     padding: 10px;
 }
 
-.lk-data {
-    width: auto;
-}
-
-.lk-data p {
-    text-align: left;
-    padding: 40px 0px 0px 120px;
-    /*border: 4px #808080 solid;*/
-    width: 100px;
-    margin-left: 600px;
-    display: inline-block;
-    font-size: 18;
+table {
+    margin-right: 500px;
 }

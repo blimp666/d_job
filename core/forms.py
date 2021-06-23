@@ -1,9 +1,11 @@
-from django.forms import ModelForm
-
-from core.models import UserProfile, Conference
+# coding: utf-8
+from django.forms import ModelForm, PasswordInput
+from core.models import Conference
+from core.models import UserProfile
 
 
 class UserProfileForm(ModelForm):
+    """Форма для создания профиля пользователя."""
 
     class Meta:
         model = UserProfile
@@ -20,9 +22,13 @@ class UserProfileForm(ModelForm):
             'phone',
             'personal_data'
         ]
+        widgets = {
+            'password': PasswordInput(),
+        }
 
 
 class LoginForm(UserProfileForm):
+    """Форма для авторизации."""
 
     class Meta:
         model = UserProfile
@@ -30,15 +36,21 @@ class LoginForm(UserProfileForm):
             'email',
             'password',
         ]
+        widgets = {
+            'password': PasswordInput(),
+        }
 
 
 class CreateConference(ModelForm):
+    """Форма для создания конференции."""
 
     class Meta:
         model = Conference
         fields = [
             'theme',
-            'count_participant',
             'date_start',
-            'description'
+            'description',
+            'requirements',
+            'count_participant',
+            'file'
         ]
